@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard e-SUS APS - Palmeirais</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .periodo-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Menu */
+        .menu {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .menu ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .menu li {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .menu a {
+            display: block;
+            text-align: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .menu a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .menu a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-value {
+            color: #2c3e50;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* Gráficos */
+        .graficos-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .grafico-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .grafico-container h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        canvas {
+            max-height: 300px;
+            width: 100% !important;
+        }
+
+        /* Tabela */
+        .tabela-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .total-row {
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            font-weight: bold;
+        }
+
+        .equipe-badge {
+            background: #e8f4fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            display: inline-block;
+        }
+
+        /* Links de menu */
+        .menu-links {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+        }
+
+        .menu-links h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .menu-link-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #2c3e50;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .menu-link-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .menu-link-item i {
+            display: block;
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏥 e-SUS APS - Palmeirais/PI</h1>
+            <div class="subtitle">Relatório de Visitas Domiciliares e Territoriais</div>
+            <div class="periodo-badge">
+                <i class="fas fa-calendar-alt"></i> Período: 01/02/2025 a 31/01/2026
+            </div>
+        </div>
+
+        <!-- Menu Principal -->
+        <div class="menu">
+            <ul>
+                <li><a href="#inicio" class="active"><i class="fas fa-home"></i> Visitas Domiciliares</a></li>
+                <li><a href="medicos.html"><i class="fas fa-user-md"></i> Atendimentos Médicos</a></li>
+                <li><a href="enfermeiros.html"><i class="fas fa-user-nurse"></i> Enfermagem</a></li>
+                <li><a href="dentistas.html"><i class="fas fa-tooth"></i> Dentistas</a></li>
+                <li><a href="#emulti"><i class="fas fa-users"></i> eMulti</a></li>
+            </ul>
+        </div>
+
+        <!-- Cards de Resumo -->
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-home"></i></div>
+                <div class="card-title">Total de Visitas</div>
+                <div class="card-value">162.946</div>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-hospital"></i></div>
+                <div class="card-title">Unidades de Saúde</div>
+                <div class="card-value">7</div>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="card-title">Média Mensal</div>
+                <div class="card-value">13.579</div>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-star"></i></div>
+                <div class="card-title">Melhor Mês</div>
+                <div class="card-value">Abr/25 (15.600)</div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="graficos-row">
+            <div class="grafico-container">
+                <h3><i class="fas fa-chart-line"></i> Evolução Mensal - 2025/2026</h3>
+                <canvas id="graficoMensal"></canvas>
+            </div>
+            <div class="grafico-container">
+                <h3><i class="fas fa-chart-pie"></i> Distribuição por Unidade</h3>
+                <canvas id="graficoPizza"></canvas>
+            </div>
+        </div>
+
+        <div class="graficos-row">
+            <div class="grafico-container">
+                <h3><i class="fas fa-chart-bar"></i> Total por Unidade</h3>
+                <canvas id="graficoBarras"></canvas>
+            </div>
+            <div class="grafico-container">
+                <h3><i class="fas fa-chart-bar"></i> Comparativo por Equipe</h3>
+                <canvas id="graficoEquipes"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabela de Dados -->
+        <div class="tabela-container">
+            <h3 style="margin-bottom: 20px; color: #2c3e50;">
+                <i class="fas fa-table"></i> Detalhamento por Unidade e Mês
+            </h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Unidade de Saúde</th>
+                        <th>02/2025</th>
+                        <th>03/2025</th>
+                        <th>04/2025</th>
+                        <th>05/2025</th>
+                        <th>06/2025</th>
+                        <th>07/2025</th>
+                        <th>08/2025</th>
+                        <th>09/2025</th>
+                        <th>10/2025</th>
+                        <th>11/2025</th>
+                        <th>12/2025</th>
+                        <th>01/2026</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="equipe-badge">CS Nossa Senhora da Conceicao Psf</span></td>
+                        <td>1.861</td>
+                        <td>2.919</td>
+                        <td>2.464</td>
+                        <td>2.418</td>
+                        <td>2.336</td>
+                        <td>2.306</td>
+                        <td>1.956</td>
+                        <td>2.886</td>
+                        <td>2.257</td>
+                        <td>1.945</td>
+                        <td>2.076</td>
+                        <td>2.536</td>
+                        <td>27.960</td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps Candido B do Nascimento</span></td>
+                        <td>1.881</td>
+                        <td>1.939</td>
+                        <td>2.279</td>
+                        <td>1.913</td>
+                        <td>1.669</td>
+                        <td>1.860</td>
+                        <td>1.757</td>
+                        <td>1.705</td>
+                        <td>1.678</td>
+                        <td>1.436</td>
+                        <td>1.628</td>
+                        <td>1.781</td>
+                        <td>21.526</td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps Dr Dirceu M Arcoverde Psf</span></td>
+                        <td>921</td>
+                        <td>950</td>
+                        <td>1.386</td>
+                        <td>1.159</td>
+                        <td>1.016</td>
+                        <td>1.595</td>
+                        <td>1.008</td>
+                        <td>1.396</td>
+                        <td>1.284</td>
+                        <td>1.253</td>
+                        <td>1.140</td>
+                        <td>1.189</td>
+                        <td>14.297</td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps Felismina Soares Ribeiro Psf</span></td>
+                        <td>839</td>
+                        <td>1.427</td>
+                        <td>1.621</td>
+                        <td>1.478</td>
+                        <td>1.473</td>
+                        <td>1.447</td>
+                        <td>1.631</td>
+                        <td>1.388</td>
+                        <td>1.552</td>
+                        <td>1.545</td>
+                        <td>1.616</td>
+                        <td>1.812</td>
+                        <td>17.829</td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps Jose Campelo da Fonseca</span></td>
+                        <td>1.709</td>
+                        <td>1.487</td>
+                        <td>1.279</td>
+                        <td>1.528</td>
+                        <td>1.585</td>
+                        <td>1.493</td>
+                        <td>1.369</td>
+                        <td>1.435</td>
+                        <td>1.061</td>
+                        <td>1.112</td>
+                        <td>1.238</td>
+                        <td>1.513</td>
+                        <td>16.809</td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps de Pedro J Celestino Psf</span></td>
+                        <td>2.179</td>
+                        <td>1.962</td>
+                        <td>2.449</td>
+                        <td>2.265</td>
+                        <td>1.839</td>
+                        <td>2.651</td>
+                        <td>2.521</td>
+                        <td>1.976</td>
+                        <td>2.202</td>
+                        <td>1.966</td>
+                        <td>1.885</td>
+                        <td>2.559</td>
+                        <td>26.454</td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Us Lucidio Ribeiro de Sousa Psf</span></td>
+                        <td>2.285</td>
+                        <td>2.757</td>
+                        <td>4.122</td>
+                        <td>2.924</td>
+                        <td>2.866</td>
+                        <td>3.149</td>
+                        <td>3.661</td>
+                        <td>2.947</td>
+                        <td>3.077</td>
+                        <td>2.672</td>
+                        <td>3.622</td>
+                        <td>3.989</td>
+                        <td>38.071</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>TOTAL GERAL</strong></td>
+                        <td><strong>11.675</strong></td>
+                        <td><strong>13.441</strong></td>
+                        <td><strong>15.600</strong></td>
+                        <td><strong>13.685</strong></td>
+                        <td><strong>12.784</strong></td>
+                        <td><strong>14.501</strong></td>
+                        <td><strong>13.903</strong></td>
+                        <td><strong>13.733</strong></td>
+                        <td><strong>13.111</strong></td>
+                        <td><strong>11.929</strong></td>
+                        <td><strong>13.205</strong></td>
+                        <td><strong>15.379</strong></td>
+                        <td><strong>162.946</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Links para outros menus -->
+        <div class="menu-links">
+            <h3><i class="fas fa-link"></i> Acessar outros relatórios:</h3>
+            <div class="links-grid">
+                <a href="medicos.html" class="menu-link-item">
+                    <i class="fas fa-user-md"></i>
+                    Atendimentos Médicos
+                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">Geral e por equipe</small>
+                </a>
+                <a href="enfermeiros.html" class="menu-link-item">
+                    <i class="fas fa-user-nurse"></i>
+                    Atendimentos Enfermagem
+                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">Procedimentos e consultas</small>
+                </a>
+                <a href="dentistas.html" class="menu-link-item">
+                    <i class="fas fa-tooth"></i>
+                    Atendimentos Odontológicos
+                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">Dentistas</small>
+                </a>
+                <a href="#" class="menu-link-item">
+                    <i class="fas fa-heart"></i>
+                    Equipe eMulti
+                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">Multiprofissional</small>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados para os gráficos
+        const meses = ['Fev/25', 'Mar/25', 'Abr/25', 'Mai/25', 'Jun/25', 'Jul/25', 'Ago/25', 'Set/25', 'Out/25', 'Nov/25', 'Dez/25', 'Jan/26'];
+        const totaisMensais = [11675, 13441, 15600, 13685, 12784, 14501, 13903, 13733, 13111, 11929, 13205, 15379];
+        
+        const unidades = [
+            'CS N. Sra. Conceicao',
+            'Ps Candido Nascimento',
+            'Ps Dirceu Arcoverde',
+            'Ps Felismina Ribeiro',
+            'Ps Jose Campelo',
+            'Ps Pedro Celestino',
+            'Us Lucidio Sousa'
+        ];
+        
+        const totaisUnidades = [27960, 21526, 14297, 17829, 16809, 26454, 38071];
+
+        // Gráfico Mensal
+        new Chart(document.getElementById('graficoMensal'), {
+            type: 'line',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Total de Visitas',
+                    data: totaisMensais,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#764ba2',
+                    pointBorderColor: 'white',
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Gráfico Pizza
+        new Chart(document.getElementById('graficoPizza'), {
+            type: 'doughnut',
+            data: {
+                labels: unidades,
+                datasets: [{
+                    data: totaisUnidades,
+                    backgroundColor: [
+                        '#667eea', '#764ba2', '#fc8181', '#48bb78', '#fbbf24', '#f43f5e', '#3b82f6'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Gráfico de Barras
+        new Chart(document.getElementById('graficoBarras'), {
+            type: 'bar',
+            data: {
+                labels: unidades,
+                datasets: [{
+                    label: 'Total de Visitas',
+                    data: totaisUnidades,
+                    backgroundColor: '#667eea',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Gráfico Comparativo por Equipe
+        new Chart(document.getElementById('graficoEquipes'), {
+            type: 'radar',
+            data: {
+                labels: unidades,
+                datasets: [{
+                    label: 'Desempenho por Equipe',
+                    data: totaisUnidades.map(v => v / 500), // Ajuste para escala
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    borderColor: '#667eea',
+                    pointBackgroundColor: '#764ba2',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#764ba2'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
