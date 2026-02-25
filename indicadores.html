@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SIAPS - Palmeirais/PI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --dark-bg: #f8f9fa;
+            --card-border: rgba(0,0,0,.125);
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,.1);
+        }
+        
+        .dashboard-title {
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-tabs .nav-link {
+            font-weight: 500;
+            color: #495057;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            margin-right: 0.5rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            transition: all 0.2s;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            background-color: #e9ecef;
+            color: #0d6efd;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #0d6efd;
+            background-color: transparent;
+            border-bottom: 3px solid #0d6efd;
+        }
+        
+        .nav-tabs .nav-link i {
+            margin-right: 0.5rem;
+        }
+        
+        .badge-otimo {
+            background-color: #198754;
+            color: white;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .badge-bom {
+            background-color: #0d6efd;
+            color: white;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .badge-suficiente {
+            background-color: #ffc107;
+            color: #000;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .badge-regular {
+            background-color: #dc3545;
+            color: white;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.05);
+            transition: transform 0.2s;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,.1);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 1rem 1.25rem;
+            border-radius: 1rem 1rem 0 0 !important;
+            font-weight: 600;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+            color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-section {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+        }
+        
+        .table-equipes {
+            font-size: 0.9rem;
+        }
+        
+        .table-equipes th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+        
+        .table-equipes td {
+            vertical-align: middle;
+        }
+        
+        .footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            background-color: white;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .componente-switch {
+            margin-bottom: 1rem;
+            text-align: right;
+        }
+        
+        .btn-componente {
+            border-radius: 2rem;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-componente.active {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+        
+        .btn-componente:not(.active) {
+            background-color: white;
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+        
+        .btn-componente i {
+            margin-right: 0.5rem;
+        }
+        
+        .info-municipio {
+            background-color: #e7f1ff;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #0d6efd;
+        }
+        
+        .data-geracao {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .classificacao-col {
+            min-width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="dashboard-title">
+                        <i class="bi bi-clipboard-data"></i> SIAPS - Dashboard de Desempenho
+                    </h1>
+                    <p class="dashboard-subtitle">
+                        <i class="bi bi-geo-alt"></i> Município: Palmeirais (PI) | 
+                        <i class="bi bi-calendar"></i> Quadrimestres: Q1/25, Q2/25, Q3/25 |
+                        <i class="bi bi-info-circle"></i> Dados preliminares
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <span class="badge bg-light text-dark p-2" id="componenteAtual">
+                        <i class="bi bi-people"></i> Componente: Vínculo e Acompanhamento Territorial
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Informações do Município -->
+        <div class="info-municipio">
+            <div class="row">
+                <div class="col-md-8">
+                    <i class="bi bi-building"></i> <strong>Palmeirais - PI</strong> (Cód. IBGE: 220750)
+                </div>
+                <div class="col-md-4 text-md-end data-geracao">
+                    <i class="bi bi-clock-history"></i> Gerado em: 25/02/2026
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de alternância entre componentes -->
+        <div class="componente-switch">
+            <div class="btn-group" role="group">
+                <a href="index.html" class="btn btn-componente">
+                    <i class="fas fa-home"></i> Voltar
+                </a>
+                <a href="#vinculo" class="btn btn-componente active" id="btnVinculo" onclick="mudarComponente('vinculo'); return false;">
+                    <i class="bi bi-house-heart"></i> Vínculo
+                </a>
+                <a href="#qualidade" class="btn btn-componente" id="btnQualidade" onclick="mudarComponente('qualidade'); return false;">
+                    <i class="bi bi-star"></i> Qualidade
+                </a>
+            </div>
+        </div>
+
+        <!-- Navegação por tipo de equipe -->
+        <ul class="nav nav-tabs" id="equipeTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="esf-tab" data-bs-toggle="tab" data-bs-target="#esf" type="button" role="tab">
+                    <i class="bi bi-house-heart"></i> eSF
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="esb-tab" data-bs-toggle="tab" data-bs-target="#esb" type="button" role="tab">
+                    <i class="bi bi-brush"></i> eSB
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="emulti-tab" data-bs-toggle="tab" data-bs-target="#emulti" type="button" role="tab">
+                    <i class="bi bi-people"></i> eMulti
+                </button>
+            </li>
+        </ul>
+
+        <!-- Conteúdo das Abas -->
+        <div class="tab-content" id="equipeTabsContent">
+            <!-- Aba eSF -->
+            <div class="tab-pane fade show active" id="esf" role="tabpanel">
+                <!-- Cards de Resumo -->
+                <div class="row mb-4" id="cardsResumoESF">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Filtrar por classificação (Q3):</label>
+                            <select class="form-select" id="classificacaoFilterESF">
+                                <option value="todas">Todas as classificações</option>
+                                <option value="ÓTIMO">ÓTIMO</option>
+                                <option value="BOM">BOM</option>
+                                <option value="SUFICIENTE">SUFICIENTE</option>
+                                <option value="REGULAR">REGULAR</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Filtrar por tendência:</label>
+                            <select class="form-select" id="tendenciaFilterESF">
+                                <option value="todas">Todas as tendências</option>
+                                <option value="estavel">Estável</option>
+                                <option value="avanco">Avanço</option>
+                                <option value="retrocesso">Retrocesso</option>
+                                <option value="oscilou">Oscilou</option>
+                                <option value="nova">Nova</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Buscar equipe:</label>
+                            <input type="text" class="form-control" id="searchEquipeESF" placeholder="Digite o nome da equipe...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-pie-chart"></i> <span id="graficoPieTitleESF">Distribuição das Classificações (Q3/25)</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="classificacaoChartESF" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-graph-up"></i> <span id="graficoLineTitleESF">Evolução da Média - eSF</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="evolucaoChartESF" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Equipes -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <i class="bi bi-table"></i> <span id="tabelaTitleESF">Desempenho Detalhado - eSF</span>
+                        <span class="float-end" id="resultCountESF">Mostrando equipes</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-equipes mb-0" id="equipesTableESF">
+                                <thead>
+                                    <tr>
+                                        <th>Equipe</th>
+                                        <th class="text-center">Q1/25</th>
+                                        <th class="text-center classificacao-col">Classif. Q1</th>
+                                        <th class="text-center">Q2/25</th>
+                                        <th class="text-center classificacao-col">Classif. Q2</th>
+                                        <th class="text-center">Q3/25</th>
+                                        <th class="text-center">Classif. Q3</th>
+                                        <th class="text-center">Média</th>
+                                        <th>Tendência</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="equipesTableBodyESF">
+                                    <!-- Dados serão inseridos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba eSB -->
+            <div class="tab-pane fade" id="esb" role="tabpanel">
+                <!-- Cards de Resumo -->
+                <div class="row mb-4" id="cardsResumoESB">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Filtrar por classificação (Q3):</label>
+                            <select class="form-select" id="classificacaoFilterESB">
+                                <option value="todas">Todas as classificações</option>
+                                <option value="ÓTIMO">ÓTIMO</option>
+                                <option value="BOM">BOM</option>
+                                <option value="SUFICIENTE">SUFICIENTE</option>
+                                <option value="REGULAR">REGULAR</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Filtrar por tendência:</label>
+                            <select class="form-select" id="tendenciaFilterESB">
+                                <option value="todas">Todas as tendências</option>
+                                <option value="estavel">Estável</option>
+                                <option value="avanco">Avanço</option>
+                                <option value="retrocesso">Retrocesso</option>
+                                <option value="oscilou">Oscilou</option>
+                                <option value="nova">Nova</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Buscar equipe:</label>
+                            <input type="text" class="form-control" id="searchEquipeESB" placeholder="Digite o nome da equipe...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-pie-chart"></i> <span id="graficoPieTitleESB">Distribuição das Classificações (Q3/25) - eSB</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="classificacaoChartESB" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-graph-up"></i> <span id="graficoLineTitleESB">Evolução da Média - eSB</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="evolucaoChartESB" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Equipes -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <i class="bi bi-table"></i> <span id="tabelaTitleESB">Desempenho Detalhado - eSB</span>
+                        <span class="float-end" id="resultCountESB">Mostrando equipes</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-equipes mb-0" id="equipesTableESB">
+                                <thead>
+                                    <tr>
+                                        <th>Equipe</th>
+                                        <th class="text-center">Q1/25</th>
+                                        <th class="text-center classificacao-col">Classif. Q1</th>
+                                        <th class="text-center">Q2/25</th>
+                                        <th class="text-center classificacao-col">Classif. Q2</th>
+                                        <th class="text-center">Q3/25</th>
+                                        <th class="text-center">Classif. Q3</th>
+                                        <th class="text-center">Média</th>
+                                        <th>Tendência</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="equipesTableBodyESB">
+                                    <!-- Dados serão inseridos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba eMulti -->
+            <div class="tab-pane fade" id="emulti" role="tabpanel">
+                <!-- Cards de Resumo -->
+                <div class="row mb-4" id="cardsResumoEMULTI">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Filtrar por classificação (Q3):</label>
+                            <select class="form-select" id="classificacaoFilterEMULTI">
+                                <option value="todas">Todas as classificações</option>
+                                <option value="ÓTIMO">ÓTIMO</option>
+                                <option value="BOM">BOM</option>
+                                <option value="SUFICIENTE">SUFICIENTE</option>
+                                <option value="REGULAR">REGULAR</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Filtrar por tendência:</label>
+                            <select class="form-select" id="tendenciaFilterEMULTI">
+                                <option value="todas">Todas as tendências</option>
+                                <option value="estavel">Estável</option>
+                                <option value="avanco">Avanço</option>
+                                <option value="retrocesso">Retrocesso</option>
+                                <option value="oscilou">Oscilou</option>
+                                <option value="nova">Nova</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Buscar equipe:</label>
+                            <input type="text" class="form-control" id="searchEquipeEMULTI" placeholder="Digite o nome da equipe...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-pie-chart"></i> <span id="graficoPieTitleEMULTI">Distribuição das Classificações (Q3/25) - eMulti</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="classificacaoChartEMULTI" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-graph-up"></i> <span id="graficoLineTitleEMULTI">Evolução da Média - eMulti</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="evolucaoChartEMULTI" style="max-height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Equipes -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <i class="bi bi-table"></i> <span id="tabelaTitleEMULTI">Desempenho Detalhado - eMulti</span>
+                        <span class="float-end" id="resultCountEMULTI">Mostrando equipes</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-equipes mb-0" id="equipesTableEMULTI">
+                                <thead>
+                                    <tr>
+                                        <th>Equipe</th>
+                                        <th class="text-center">Q1/25</th>
+                                        <th class="text-center classificacao-col">Classif. Q1</th>
+                                        <th class="text-center">Q2/25</th>
+                                        <th class="text-center classificacao-col">Classif. Q2</th>
+                                        <th class="text-center">Q3/25</th>
+                                        <th class="text-center">Classif. Q3</th>
+                                        <th class="text-center">Média</th>
+                                        <th>Tendência</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="equipesTableBodyEMULTI">
+                                    <!-- Dados serão inseridos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <footer class="footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">
+                        <i class="bi bi-database"></i> Fonte: Sistema de Informação para a Atenção Primária à Saúde - SIAPS
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 text-muted">
+                        <i class="bi bi-exclamation-triangle"></i> Dado Preliminar - Sujeito a alterações
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ==================== DADOS PALMEIRAIS ====================
+
+        // Função para determinar classificação baseada na nota
+        function getClassificacaoPorNota(nota) {
+            if (nota === null || nota === undefined) return '-';
+            if (nota >= 8.0) return 'ÓTIMO';
+            if (nota >= 6.0) return 'BOM';
+            if (nota >= 4.0) return 'SUFICIENTE';
+            return 'REGULAR';
+        }
+
+        // DADOS eSF - VÍNCULO (com Dimensão Cadastro e Acompanhamento)
+        const equipesVinculoData = [
+            { 
+                nome: "PSF CENTRO DE SAUDE (CS CONCEIÇÃO)", 
+                q1: 10, q2: 10, q3: 10,
+                classif_q1: "ÓTIMO", classif_q2: "ÓTIMO", classif_q3: "ÓTIMO"
+            },
+            { 
+                nome: "PSF CANDIDO B NASCIMENTO", 
+                q1: 10, q2: 10, q3: 10,
+                classif_q1: "ÓTIMO", classif_q2: "ÓTIMO", classif_q3: "ÓTIMO"
+            },
+            { 
+                nome: "PSF PEDRO JOSE CELESTINO", 
+                q1: 10, q2: 10, q3: 10,
+                classif_q1: "ÓTIMO", classif_q2: "ÓTIMO", classif_q3: "ÓTIMO"
+            },
+            { 
+                nome: "PSF DIRCEU M ARCOVERDE", 
+                q1: 5.75, q2: 5.75, q3: 5.75,
+                classif_q1: "SUFICIENTE", classif_q2: "SUFICIENTE", classif_q3: "SUFICIENTE"
+            },
+            { 
+                nome: "PSF FELISMINA", 
+                q1: 6.19, q2: 7.5, q3: 7.5,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            },
+            { 
+                nome: "PSF JOSE CAMPELO DA FONSECA", 
+                q1: 7.5, q2: 7.5, q3: 7.5,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            },
+            { 
+                nome: "PSF LUCIDIO RIBEIRO", 
+                q1: 10, q2: 10, q3: 10,
+                classif_q1: "ÓTIMO", classif_q2: "ÓTIMO", classif_q3: "ÓTIMO"
+            }
+        ];
+
+        // DADOS eSF - QUALIDADE
+        const equipesQualidadeData = [
+            { 
+                nome: "PSF CENTRO DE SAUDE (CS CONCEIÇÃO)", 
+                q1: 6.25, q2: 7.5, q3: 7.0,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            },
+            { 
+                nome: "PSF CANDIDO B NASCIMENTO", 
+                q1: 6.0, q2: 6.75, q3: 8.0,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "ÓTIMO"
+            },
+            { 
+                nome: "PSF PEDRO JOSE CELESTINO", 
+                q1: 5.25, q2: 5.75, q3: 6.75,
+                classif_q1: "BOM", classif_q2: "SUFICIENTE", classif_q3: "BOM"
+            },
+            { 
+                nome: "PSF DIRCEU M ARCOVERDE", 
+                q1: 6.0, q2: 6.75, q3: 7.25,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            },
+            { 
+                nome: "PSF FELISMINA", 
+                q1: 6.0, q2: 6.0, q3: 7.0,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            },
+            { 
+                nome: "PSF JOSE CAMPELO DA FONSECA", 
+                q1: 5.75, q2: 7.5, q3: 8.0,
+                classif_q1: "SUFICIENTE", classif_q2: "BOM", classif_q3: "ÓTIMO"
+            },
+            { 
+                nome: "PSF LUCIDIO RIBEIRO", 
+                q1: 5.25, q2: 6.0, q3: 6.75,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            }
+        ];
+
+        // DADOS eSB - QUALIDADE
+        const equipesESBData = [
+            { 
+                nome: "SAUDE BUCAL CENTRO DE SAUDE", 
+                q1: 3.75, q2: 6.0, q3: 7.0,
+                classif_q1: "SUFICIENTE", classif_q2: "BOM", classif_q3: "BOM"
+            },
+            { 
+                nome: "SAUDE BUCAL C B NASCIMENTO", 
+                q1: 4.75, q2: 5.0, q3: 5.0,
+                classif_q1: "SUFICIENTE", classif_q2: "BOM", classif_q3: "BOM"
+            },
+            { 
+                nome: "SAUDE BUCAL PEDRO J CELESTINO", 
+                q1: 2.5, q2: 2.75, q3: 2.75,
+                classif_q1: "REGULAR", classif_q2: "REGULAR", classif_q3: "SUFICIENTE"
+            },
+            { 
+                nome: "SAUDE BUCAL D M ARCOVERDE", 
+                q1: 4.0, q2: 2.5, q3: 6.25,
+                classif_q1: "SUFICIENTE", classif_q2: "REGULAR", classif_q3: "BOM"
+            },
+            { 
+                nome: "SAUDE BUCAL FELISMINA", 
+                q1: 4.25, q2: 4.25, q3: 5.25,
+                classif_q1: "SUFICIENTE", classif_q2: "SUFICIENTE", classif_q3: "BOM"
+            },
+            { 
+                nome: "SB JOSE CAMPELO DA FONSECA", 
+                q1: 5.0, q2: 4.25, q3: 6.5,
+                classif_q1: "BOM", classif_q2: "SUFICIENTE", classif_q3: "BOM"
+            },
+            { 
+                nome: "SAUDE BUCAL LUCIDIO RIBEIRO", 
+                q1: 5.75, q2: 7.5, q3: 7.25,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            }
+        ];
+
+        // DADOS eMulti - QUALIDADE
+        const equipesEMULTIData = [
+            { 
+                nome: "EQUIPE EMULTI", 
+                q1: 5.5, q2: 7.5, q3: 7.5,
+                classif_q1: "BOM", classif_q2: "BOM", classif_q3: "BOM"
+            }
+        ];
+
+        // ==================== FUNÇÕES AUXILIARES ====================
+
+        function getTendencia(equipe) {
+            if (!equipe.q1 || !equipe.q2 || !equipe.q3) return "nova";
+            
+            if (equipe.q1 === equipe.q2 && equipe.q2 === equipe.q3) return "estavel";
+            
+            if (equipe.q3 > equipe.q2) return "avanco";
+            if (equipe.q3 < equipe.q2) return "retrocesso";
+            
+            return "oscilou";
+        }
+
+        function getBadgeClass(classificacao) {
+            switch(classificacao) {
+                case 'ÓTIMO': return 'badge-otimo';
+                case 'BOM': return 'badge-bom';
+                case 'SUFICIENTE': return 'badge-suficiente';
+                case 'REGULAR': return 'badge-regular';
+                default: return 'badge-secondary';
+            }
+        }
+
+        function getTendenciaIcon(tendencia) {
+            switch(tendencia) {
+                case 'avanco': return '<i class="bi bi-arrow-up-circle-fill text-success"></i> Avanço';
+                case 'retrocesso': return '<i class="bi bi-arrow-down-circle-fill text-danger"></i> Retrocesso';
+                case 'estavel': return '<i class="bi bi-dash-circle-fill text-secondary"></i> Estável';
+                case 'oscilou': return '<i class="bi bi-arrow-left-right text-warning"></i> Oscilou';
+                case 'nova': return '<i class="bi bi-star-fill text-info"></i> Nova';
+                default: return '-';
+            }
+        }
+
+        // ==================== FUNÇÕES PARA CADA TIPO DE EQUIPE ====================
+
+        function atualizarCards(tipo, dados) {
+            const container = document.getElementById(`cardsResumo${tipo}`);
+            if (!container) return;
+            
+            const total = dados.length;
+            const otimo = dados.filter(e => e.classif_q3 === 'ÓTIMO').length;
+            const bom = dados.filter(e => e.classif_q3 === 'BOM').length;
+            const suficiente = dados.filter(e => e.classif_q3 === 'SUFICIENTE').length;
+            const regular = dados.filter(e => e.classif_q3 === 'REGULAR').length;
+            
+            let corTipo;
+            switch(tipo) {
+                case 'ESF': corTipo = 'linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%)'; break;
+                case 'ESB': corTipo = 'linear-gradient(135deg, #20c997 0%, #198754 100%)'; break;
+                case 'EMULTI': corTipo = 'linear-gradient(135deg, #6f42c1 0%, #6610f2 100%)'; break;
+                default: corTipo = 'linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%)';
+            }
+            
+            container.innerHTML = `
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: ${corTipo};">
+                        <div class="stat-number">${total}</div>
+                        <div class="stat-label">Total de Equipes</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #198754 0%, #146c43 100%);">
+                        <div class="stat-number">${otimo}</div>
+                        <div class="stat-label">ÓTIMO</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                        <div class="stat-number">${bom}</div>
+                        <div class="stat-label">BOM</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #cc9a06 100%);">
+                        <div class="stat-number">${suficiente + regular}</div>
+                        <div class="stat-label">SUFICIENTE/REGULAR</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTabela(tipo, dadosFiltrados) {
+            const tbody = document.getElementById(`equipesTableBody${tipo}`);
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            dadosFiltrados.forEach(equipe => {
+                const media = ((equipe.q1 || 0) + (equipe.q2 || 0) + (equipe.q3 || 0)) / 
+                    [equipe.q1, equipe.q2, equipe.q3].filter(v => v !== null).length;
+                
+                const tendencia = getTendencia(equipe);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${equipe.nome}</strong></td>
+                    <td class="text-center">${equipe.q1 !== null ? equipe.q1.toFixed(2) : '-'}</td>
+                    <td class="text-center"><span class="badge ${getBadgeClass(equipe.classif_q1)}">${equipe.classif_q1 || '-'}</span></td>
+                    <td class="text-center">${equipe.q2 !== null ? equipe.q2.toFixed(2) : '-'}</td>
+                    <td class="text-center"><span class="badge ${getBadgeClass(equipe.classif_q2)}">${equipe.classif_q2 || '-'}</span></td>
+                    <td class="text-center">${equipe.q3 !== null ? equipe.q3.toFixed(2) : '-'}</td>
+                    <td class="text-center"><span class="badge ${getBadgeClass(equipe.classif_q3)}">${equipe.classif_q3}</span></td>
+                    <td class="text-center"><strong>${media.toFixed(2)}</strong></td>
+                    <td>${getTendenciaIcon(tendencia)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById(`resultCount${tipo}`).textContent = `Mostrando ${dadosFiltrados.length} equipes`;
+        }
+
+        function filtrarEquipes(tipo, dados) {
+            const classificacaoFilter = document.getElementById(`classificacaoFilter${tipo}`)?.value || 'todas';
+            const tendenciaFilter = document.getElementById(`tendenciaFilter${tipo}`)?.value || 'todas';
+            const searchTerm = document.getElementById(`searchEquipe${tipo}`)?.value.toLowerCase() || '';
+            
+            return dados.filter(equipe => {
+                if (classificacaoFilter !== 'todas' && equipe.classif_q3 !== classificacaoFilter) return false;
+                if (tendenciaFilter !== 'todas') {
+                    const tendencia = getTendencia(equipe);
+                    if (tendencia !== tendenciaFilter) return false;
+                }
+                if (searchTerm && !equipe.nome.toLowerCase().includes(searchTerm)) return false;
+                return true;
+            });
+        }
+
+        function atualizarGraficos(tipo, dados) {
+            const ctxClass = document.getElementById(`classificacaoChart${tipo}`)?.getContext('2d');
+            const ctxEvol = document.getElementById(`evolucaoChart${tipo}`)?.getContext('2d');
+            
+            if (!ctxClass || !ctxEvol) return;
+            
+            // Destruir gráficos existentes
+            if (window[`chartClass${tipo}`]) window[`chartClass${tipo}`].destroy();
+            if (window[`chartEvol${tipo}`]) window[`chartEvol${tipo}`].destroy();
+            
+            // Gráfico de Classificação (Q3)
+            const otimo = dados.filter(e => e.classif_q3 === 'ÓTIMO').length;
+            const bom = dados.filter(e => e.classif_q3 === 'BOM').length;
+            const suficiente = dados.filter(e => e.classif_q3 === 'SUFICIENTE').length;
+            const regular = dados.filter(e => e.classif_q3 === 'REGULAR').length;
+            
+            const labels = [];
+            const data = [];
+            const cores = [];
+            
+            if (otimo > 0) { labels.push(`ÓTIMO (${otimo})`); data.push(otimo); cores.push('#198754'); }
+            if (bom > 0) { labels.push(`BOM (${bom})`); data.push(bom); cores.push('#0d6efd'); }
+            if (suficiente > 0) { labels.push(`SUFICIENTE (${suficiente})`); data.push(suficiente); cores.push('#ffc107'); }
+            if (regular > 0) { labels.push(`REGULAR (${regular})`); data.push(regular); cores.push('#dc3545'); }
+            
+            window[`chartClass${tipo}`] = new Chart(ctxClass, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: cores,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            
+            // Gráfico de Evolução
+            const medias = {
+                q1: dados.reduce((acc, e) => acc + (e.q1 || 0), 0) / dados.filter(e => e.q1 !== null).length || 0,
+                q2: dados.reduce((acc, e) => acc + (e.q2 || 0), 0) / dados.filter(e => e.q2 !== null).length || 0,
+                q3: dados.reduce((acc, e) => acc + (e.q3 || 0), 0) / dados.filter(e => e.q3 !== null).length || 0
+            };
+            
+            let corLinha;
+            switch(tipo) {
+                case 'ESF': corLinha = '#0d6efd'; break;
+                case 'ESB': corLinha = '#20c997'; break;
+                case 'EMULTI': corLinha = '#6f42c1'; break;
+                default: corLinha = '#0d6efd';
+            }
+            
+            window[`chartEvol${tipo}`] = new Chart(ctxEvol, {
+                type: 'line',
+                data: {
+                    labels: ['Q1/25', 'Q2/25', 'Q3/25'],
+                    datasets: [{
+                        label: 'Nota Média',
+                        data: [medias.q1.toFixed(2), medias.q2.toFixed(2), medias.q3.toFixed(2)],
+                        borderColor: corLinha,
+                        backgroundColor: `${corLinha}1a`,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, max: 10 } }
+                }
+            });
+        }
+
+        function inicializarTipo(tipo, dados) {
+            // Cards
+            atualizarCards(tipo, dados);
+            
+            // Gráficos
+            atualizarGraficos(tipo, dados);
+            
+            // Tabela inicial
+            const filtrados = filtrarEquipes(tipo, dados);
+            renderTabela(tipo, filtrados);
+            
+            // Event listeners
+            document.getElementById(`classificacaoFilter${tipo}`)?.addEventListener('change', () => {
+                const filtrados = filtrarEquipes(tipo, dados);
+                renderTabela(tipo, filtrados);
+            });
+            
+            document.getElementById(`tendenciaFilter${tipo}`)?.addEventListener('change', () => {
+                const filtrados = filtrarEquipes(tipo, dados);
+                renderTabela(tipo, filtrados);
+            });
+            
+            document.getElementById(`searchEquipe${tipo}`)?.addEventListener('input', () => {
+                const filtrados = filtrarEquipes(tipo, dados);
+                renderTabela(tipo, filtrados);
+            });
+        }
+
+        // ==================== FUNÇÃO PARA MUDAR COMPONENTE ====================
+
+        function mudarComponente(componente) {
+            // Atualizar botões
+            document.getElementById('btnVinculo').classList.toggle('active', componente === 'vinculo');
+            document.getElementById('btnQualidade').classList.toggle('active', componente === 'qualidade');
+            
+            // Atualizar badge do header
+            const badge = document.getElementById('componenteAtual');
+            if (componente === 'vinculo') {
+                badge.innerHTML = '<i class="bi bi-people"></i> Componente: Vínculo e Acompanhamento Territorial';
+                
+                // Inicializar ESF com dados de vínculo
+                inicializarTipo('ESF', equipesVinculoData);
+                
+                // ESB e eMulti não têm dados no componente vínculo
+                const cardsESB = document.getElementById('cardsResumoESB');
+                const cardsEMULTI = document.getElementById('cardsResumoEMULTI');
+                
+                if (cardsESB) {
+                    cardsESB.innerHTML = '<div class="col-12"><div class="alert alert-info">Dados de eSB disponíveis apenas no componente Qualidade</div></div>';
+                }
+                
+                if (cardsEMULTI) {
+                    cardsEMULTI.innerHTML = '<div class="col-12"><div class="alert alert-info">Dados de eMulti disponíveis apenas no componente Qualidade</div></div>';
+                }
+                
+                // Limpar gráficos e tabelas
+                if (window['chartClassESB']) window['chartClassESB'].destroy();
+                if (window['chartEvolESB']) window['chartEvolESB'].destroy();
+                if (window['chartClassEMULTI']) window['chartClassEMULTI'].destroy();
+                if (window['chartEvolEMULTI']) window['chartEvolEMULTI'].destroy();
+                
+                document.getElementById('equipesTableBodyESB').innerHTML = '<tr><td colspan="9" class="text-center">Selecione o componente Qualidade para ver dados de eSB</td></tr>';
+                document.getElementById('equipesTableBodyEMULTI').innerHTML = '<tr><td colspan="9" class="text-center">Selecione o componente Qualidade para ver dados de eMulti</td></tr>';
+                document.getElementById('resultCountESB').textContent = 'Mostrando 0 equipes';
+                document.getElementById('resultCountEMULTI').textContent = 'Mostrando 0 equipes';
+                
+            } else {
+                badge.innerHTML = '<i class="bi bi-star"></i> Componente: Qualidade';
+                
+                // Inicializar com dados de qualidade
+                inicializarTipo('ESF', equipesQualidadeData);
+                inicializarTipo('ESB', equipesESBData);
+                inicializarTipo('EMULTI', equipesEMULTIData);
+            }
+            
+            // Atualizar hash
+            window.location.hash = componente;
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+
+        // Inicializar com base na hash
+        function inicializarComHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash === 'qualidade') {
+                mudarComponente('qualidade');
+            } else {
+                mudarComponente('vinculo');
+            }
+        }
+
+        // Detectar mudanças na hash
+        window.addEventListener('hashchange', inicializarComHash);
+
+        // Inicializar
+        inicializarComHash();
+    </script>
+</body>
+</html>
