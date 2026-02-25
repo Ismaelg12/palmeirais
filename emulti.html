@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard e-SUS APS - Palmeirais</title>
+    <title>Dashboard eMulti - Palmeirais/PI</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -16,7 +15,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -26,7 +25,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             background: white;
             border-radius: 20px;
@@ -38,16 +36,18 @@
         .header h1 {
             color: #2c3e50;
             font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            color: #27ae60;
+            font-size: 1.3em;
+            font-weight: 400;
             margin-bottom: 10px;
         }
 
-        .header .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1em;
-        }
-
         .periodo-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             color: white;
             padding: 8px 15px;
             border-radius: 10px;
@@ -55,7 +55,6 @@
             margin-top: 10px;
         }
 
-        /* Menu */
         .menu {
             background: white;
             border-radius: 15px;
@@ -86,23 +85,19 @@
             border-radius: 10px;
             font-weight: 600;
             transition: all 0.3s;
-            border: 2px solid transparent;
         }
 
         .menu a:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .menu a.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             color: white;
-            border-color: #667eea;
         }
 
-        /* Cards */
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -124,7 +119,7 @@
 
         .card-icon {
             font-size: 2.5em;
-            color: #667eea;
+            color: #27ae60;
             margin-bottom: 10px;
         }
 
@@ -147,7 +142,6 @@
             margin-top: 5px;
         }
 
-        /* Gráficos */
         .graficos-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -175,7 +169,6 @@
             width: 100% !important;
         }
 
-        /* Tabela */
         .tabela-container {
             background: white;
             border-radius: 15px;
@@ -190,7 +183,7 @@
         }
 
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             color: white;
             padding: 12px;
             font-weight: 600;
@@ -207,17 +200,65 @@
         }
 
         .total-row {
-            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            background: linear-gradient(135deg, #2ecc7120 0%, #27ae6020 100%);
             font-weight: bold;
         }
 
         .equipe-badge {
-            background: #e8f4fd;
-            color: #1976d2;
+            background: #e1f0fa;
+            color: #27ae60;
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 0.85em;
             display: inline-block;
+        }
+
+        .destaque {
+            background-color: #27ae6010;
+            font-weight: 600;
+        }
+
+        .zero-value {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .menu-link-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #2c3e50;
+            text-align: center;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        .menu-link-item:hover {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .menu-link-item i {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .insight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 10px 10px 0;
         }
 
         .media-badge {
@@ -228,64 +269,14 @@
             font-size: 0.8em;
             margin-left: 5px;
         }
-
-        /* Links de menu */
-        .menu-links {
-            margin-top: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-        }
-
-        .menu-links h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .menu-link-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #2c3e50;
-            text-align: center;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .menu-link-item:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .menu-link-item i {
-            display: block;
-            font-size: 1.5em;
-            margin-bottom: 8px;
-        }
-
-        .insight-box {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 0 10px 10px 0;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🏥 e-SUS APS - Palmeirais/PI</h1>
-            <div class="subtitle">Relatório de Visitas Domiciliares e Territoriais</div>
+            <h1>🏥 MUNICÍPIO DE PALMEIRAIS</h1>
+            <h2><i class="fas fa-users"></i> Relatório de Atendimento - EQUIPE EMULTI (Cód. 0000071773)</h2>
             <div class="periodo-badge">
                 <i class="fas fa-calendar-alt"></i> Período: 01/02/2025 a 31/01/2026
             </div>
@@ -294,45 +285,46 @@
         <!-- Menu Principal -->
         <div class="menu">
             <ul>
-                <li><a href="#inicio" class="active"><i class="fas fa-home"></i> Visitas Domiciliares</a></li>
-                <li><a href="medicos.html"><i class="fas fa-user-md"></i> Atendimentos Médicos</a></li>
+                <li><a href="medicos.html"><i class="fas fa-user-md"></i> Médicos</a></li>
                 <li><a href="enfermeiros.html"><i class="fas fa-user-nurse"></i> Enfermagem</a></li>
                 <li><a href="dentistas.html"><i class="fas fa-tooth"></i> Dentistas</a></li>
-                <li><a href="emulti.html"><i class="fas fa-users"></i> eMulti</a></li>
+                <li><a href="#" class="active"><i class="fas fa-users"></i> eMulti</a></li>
+                <li><a href="index.html"><i class="fas fa-chart-bar"></i> Visitas</a></li>
             </ul>
         </div>
 
         <!-- Cards de Resumo -->
         <div class="cards">
             <div class="card">
-                <div class="card-icon"><i class="fas fa-home"></i></div>
-                <div class="card-title">Total de Visitas</div>
-                <div class="card-value">162.946</div>
-                <div class="card-trend"><i class="fas fa-chart-line"></i> Média 13.579/mês</div>
+                <div class="card-icon"><i class="fas fa-users"></i></div>
+                <div class="card-title">Total de Atendimentos eMulti</div>
+                <div class="card-value">2.077</div>
+                <div class="card-trend"><i class="fas fa-chart-line"></i> Média de 173/mês</div>
             </div>
             <div class="card">
                 <div class="card-icon"><i class="fas fa-hospital"></i></div>
-                <div class="card-title">Unidades de Saúde</div>
+                <div class="card-title">Unidades Atendidas</div>
                 <div class="card-value">7</div>
+                <div class="card-trend">100% das UBS</div>
             </div>
             <div class="card">
                 <div class="card-icon"><i class="fas fa-calendar-check"></i></div>
                 <div class="card-title">Média Diária</div>
-                <div class="card-value">617</div>
-                <div class="card-trend">Visitas/dia útil</div>
+                <div class="card-value">5,7</div>
+                <div class="card-trend">Atendimentos/dia útil</div>
             </div>
             <div class="card">
-                <div class="card-icon"><i class="fas fa-star"></i></div>
-                <div class="card-title">Melhor Mês</div>
-                <div class="card-value">15.600</div>
-                <div class="card-trend">Abril/2025</div>
+                <div class="card-icon"><i class="fas fa-trophy"></i></div>
+                <div class="card-title">Melhor Unidade</div>
+                <div class="card-value">CS Conceição</div>
+                <div class="card-trend">607 atendimentos</div>
             </div>
         </div>
 
         <!-- Gráficos -->
         <div class="graficos-row">
             <div class="grafico-container">
-                <h3><i class="fas fa-chart-line"></i> Evolução Mensal - 2025/2026</h3>
+                <h3><i class="fas fa-chart-line"></i> Evolução Mensal - eMulti</h3>
                 <canvas id="graficoMensal"></canvas>
             </div>
             <div class="grafico-container">
@@ -355,25 +347,25 @@
         <!-- Tabela de Dados -->
         <div class="tabela-container">
             <h3 style="margin-bottom: 20px; color: #2c3e50;">
-                <i class="fas fa-table"></i> Detalhamento por Unidade e Mês
-                <span class="media-badge">Médias: mensal | diária (22 dias/mês)</span>
+                <i class="fas fa-table"></i> Detalhamento de Atendimentos eMulti por Unidade
+                <span class="media-badge">Médias calculadas: diária (22 dias/mês) | mensal | anual</span>
             </h3>
             <table>
                 <thead>
                     <tr>
                         <th>Unidade de Saúde</th>
-                        <th>02/2025</th>
-                        <th>03/2025</th>
-                        <th>04/2025</th>
-                        <th>05/2025</th>
-                        <th>06/2025</th>
-                        <th>07/2025</th>
-                        <th>08/2025</th>
-                        <th>09/2025</th>
-                        <th>10/2025</th>
-                        <th>11/2025</th>
-                        <th>12/2025</th>
-                        <th>01/2026</th>
+                        <th>Fev/25</th>
+                        <th>Mar/25</th>
+                        <th>Abr/25</th>
+                        <th>Mai/25</th>
+                        <th>Jun/25</th>
+                        <th>Jul/25</th>
+                        <th>Ago/25</th>
+                        <th>Set/25</th>
+                        <th>Out/25</th>
+                        <th>Nov/25</th>
+                        <th>Dez/25</th>
+                        <th>Jan/26</th>
                         <th>Total</th>
                         <th>Média Mensal</th>
                         <th>Média Diária</th>
@@ -382,147 +374,147 @@
                 <tbody>
                     <tr>
                         <td><span class="equipe-badge">CS Nossa Senhora da Conceicao Psf</span></td>
-                        <td>1.861</td>
-                        <td>2.919</td>
-                        <td>2.464</td>
-                        <td>2.418</td>
-                        <td>2.336</td>
-                        <td>2.306</td>
-                        <td>1.956</td>
-                        <td>2.886</td>
-                        <td>2.257</td>
-                        <td>1.945</td>
-                        <td>2.076</td>
-                        <td>2.536</td>
-                        <td><strong>27.960</strong></td>
-                        <td><strong>2.330</strong></td>
-                        <td><strong>106</strong></td>
+                        <td>33</td>
+                        <td>19</td>
+                        <td>23</td>
+                        <td>51</td>
+                        <td>53</td>
+                        <td>74</td>
+                        <td>72</td>
+                        <td>86</td>
+                        <td>44</td>
+                        <td>55</td>
+                        <td>26</td>
+                        <td>71</td>
+                        <td><strong>607</strong></td>
+                        <td><strong>50,6</strong></td>
+                        <td><strong>2,30</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Ps Candido B do Nascimento</span></td>
-                        <td>1.881</td>
-                        <td>1.939</td>
-                        <td>2.279</td>
-                        <td>1.913</td>
-                        <td>1.669</td>
-                        <td>1.860</td>
-                        <td>1.757</td>
-                        <td>1.705</td>
-                        <td>1.678</td>
-                        <td>1.436</td>
-                        <td>1.628</td>
-                        <td>1.781</td>
-                        <td><strong>21.526</strong></td>
-                        <td><strong>1.794</strong></td>
-                        <td><strong>82</strong></td>
-                    </tr>
-                    <tr>
-                        <td><span class="equipe-badge">Ps Dr Dirceu M Arcoverde Psf</span></td>
-                        <td>921</td>
-                        <td>950</td>
-                        <td>1.386</td>
-                        <td>1.159</td>
-                        <td>1.016</td>
-                        <td>1.595</td>
-                        <td>1.008</td>
-                        <td>1.396</td>
-                        <td>1.284</td>
-                        <td>1.253</td>
-                        <td>1.140</td>
-                        <td>1.189</td>
-                        <td><strong>14.297</strong></td>
-                        <td><strong>1.191</strong></td>
-                        <td><strong>54</strong></td>
-                    </tr>
-                    <tr>
-                        <td><span class="equipe-badge">Ps Felismina Soares Ribeiro Psf</span></td>
-                        <td>839</td>
-                        <td>1.427</td>
-                        <td>1.621</td>
-                        <td>1.478</td>
-                        <td>1.473</td>
-                        <td>1.447</td>
-                        <td>1.631</td>
-                        <td>1.388</td>
-                        <td>1.552</td>
-                        <td>1.545</td>
-                        <td>1.616</td>
-                        <td>1.812</td>
-                        <td><strong>17.829</strong></td>
-                        <td><strong>1.486</strong></td>
-                        <td><strong>68</strong></td>
-                    </tr>
-                    <tr>
-                        <td><span class="equipe-badge">Ps Jose Campelo da Fonseca</span></td>
-                        <td>1.709</td>
-                        <td>1.487</td>
-                        <td>1.279</td>
-                        <td>1.528</td>
-                        <td>1.585</td>
-                        <td>1.493</td>
-                        <td>1.369</td>
-                        <td>1.435</td>
-                        <td>1.061</td>
-                        <td>1.112</td>
-                        <td>1.238</td>
-                        <td>1.513</td>
-                        <td><strong>16.809</strong></td>
-                        <td><strong>1.401</strong></td>
-                        <td><strong>64</strong></td>
+                        <td>34</td>
+                        <td>38</td>
+                        <td>12</td>
+                        <td>24</td>
+                        <td>21</td>
+                        <td>38</td>
+                        <td>23</td>
+                        <td>16</td>
+                        <td>2</td>
+                        <td>8</td>
+                        <td>7</td>
+                        <td>22</td>
+                        <td><strong>245</strong></td>
+                        <td><strong>20,4</strong></td>
+                        <td><strong>0,93</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Ps de Pedro J Celestino Psf</span></td>
-                        <td>2.179</td>
-                        <td>1.962</td>
-                        <td>2.449</td>
-                        <td>2.265</td>
-                        <td>1.839</td>
-                        <td>2.651</td>
-                        <td>2.521</td>
-                        <td>1.976</td>
-                        <td>2.202</td>
-                        <td>1.966</td>
-                        <td>1.885</td>
-                        <td>2.559</td>
-                        <td><strong>26.454</strong></td>
-                        <td><strong>2.205</strong></td>
-                        <td><strong>100</strong></td>
+                        <td>26</td>
+                        <td>47</td>
+                        <td>41</td>
+                        <td>40</td>
+                        <td>24</td>
+                        <td>48</td>
+                        <td>45</td>
+                        <td>39</td>
+                        <td>36</td>
+                        <td>56</td>
+                        <td>23</td>
+                        <td>44</td>
+                        <td><strong>469</strong></td>
+                        <td><strong>39,1</strong></td>
+                        <td><strong>1,78</strong></td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps Dr Dirceu M Arcoverde Psf</span></td>
+                        <td>28</td>
+                        <td>26</td>
+                        <td>35</td>
+                        <td>30</td>
+                        <td>20</td>
+                        <td>31</td>
+                        <td>25</td>
+                        <td>29</td>
+                        <td>23</td>
+                        <td>19</td>
+                        <td>10</td>
+                        <td>25</td>
+                        <td><strong>301</strong></td>
+                        <td><strong>25,1</strong></td>
+                        <td><strong>1,14</strong></td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps Felismina Soares Ribeiro Psf</span></td>
+                        <td>3</td>
+                        <td>8</td>
+                        <td class="zero-value">0</td>
+                        <td>2</td>
+                        <td>5</td>
+                        <td>4</td>
+                        <td>6</td>
+                        <td>2</td>
+                        <td class="zero-value">0</td>
+                        <td>1</td>
+                        <td>5</td>
+                        <td>2</td>
+                        <td><strong>38</strong></td>
+                        <td><strong>3,2</strong></td>
+                        <td><strong>0,14</strong></td>
+                    </tr>
+                    <tr>
+                        <td><span class="equipe-badge">Ps Jose Campelo da Fonseca</span></td>
+                        <td>23</td>
+                        <td>11</td>
+                        <td>28</td>
+                        <td>23</td>
+                        <td>21</td>
+                        <td>15</td>
+                        <td>28</td>
+                        <td>16</td>
+                        <td>26</td>
+                        <td>19</td>
+                        <td>18</td>
+                        <td>28</td>
+                        <td><strong>256</strong></td>
+                        <td><strong>21,3</strong></td>
+                        <td><strong>0,97</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Us Lucidio Ribeiro de Sousa Psf</span></td>
-                        <td>2.285</td>
-                        <td>2.757</td>
-                        <td>4.122</td>
-                        <td>2.924</td>
-                        <td>2.866</td>
-                        <td>3.149</td>
-                        <td>3.661</td>
-                        <td>2.947</td>
-                        <td>3.077</td>
-                        <td>2.672</td>
-                        <td>3.622</td>
-                        <td>3.989</td>
-                        <td><strong>38.071</strong></td>
-                        <td><strong>3.173</strong></td>
-                        <td><strong>144</strong></td>
+                        <td>18</td>
+                        <td>3</td>
+                        <td>3</td>
+                        <td>7</td>
+                        <td>13</td>
+                        <td>17</td>
+                        <td>27</td>
+                        <td>20</td>
+                        <td>21</td>
+                        <td>11</td>
+                        <td>11</td>
+                        <td>10</td>
+                        <td><strong>161</strong></td>
+                        <td><strong>13,4</strong></td>
+                        <td><strong>0,61</strong></td>
                     </tr>
                     <tr class="total-row">
                         <td><strong>TOTAL GERAL</strong></td>
-                        <td><strong>11.675</strong></td>
-                        <td><strong>13.441</strong></td>
-                        <td><strong>15.600</strong></td>
-                        <td><strong>13.685</strong></td>
-                        <td><strong>12.784</strong></td>
-                        <td><strong>14.501</strong></td>
-                        <td><strong>13.903</strong></td>
-                        <td><strong>13.733</strong></td>
-                        <td><strong>13.111</strong></td>
-                        <td><strong>11.929</strong></td>
-                        <td><strong>13.205</strong></td>
-                        <td><strong>15.379</strong></td>
-                        <td><strong>162.946</strong></td>
-                        <td><strong>13.579</strong></td>
-                        <td><strong>617</strong></td>
+                        <td><strong>165</strong></td>
+                        <td><strong>152</strong></td>
+                        <td><strong>142</strong></td>
+                        <td><strong>177</strong></td>
+                        <td><strong>157</strong></td>
+                        <td><strong>227</strong></td>
+                        <td><strong>226</strong></td>
+                        <td><strong>208</strong></td>
+                        <td><strong>152</strong></td>
+                        <td><strong>169</strong></td>
+                        <td><strong>100</strong></td>
+                        <td><strong>202</strong></td>
+                        <td><strong>2.077</strong></td>
+                        <td><strong>173,1</strong></td>
+                        <td><strong>7,87</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -531,7 +523,7 @@
         <!-- Análises e Insights -->
         <div class="graficos-row" style="margin-top: 25px;">
             <div class="grafico-container">
-                <h3><i class="fas fa-chart-line"></i> Top 3 Unidades - Visitas</h3>
+                <h3><i class="fas fa-chart-line"></i> Top 3 Unidades - eMulti</h3>
                 <canvas id="graficoTop3"></canvas>
             </div>
             <div class="grafico-container">
@@ -539,51 +531,60 @@
                 <div style="display: flex; flex-direction: column; gap: 15px;">
                     <div class="insight-box">
                         <i class="fas fa-arrow-up" style="color: #27ae60;"></i>
-                        <strong>Melhor Mês:</strong> Abril/2025 com 15.600 visitas
+                        <strong>Melhor Mês:</strong> Julho/25 com 227 atendimentos
                     </div>
                     <div class="insight-box">
                         <i class="fas fa-arrow-down" style="color: #e74c3c;"></i>
-                        <strong>Pior Mês:</strong> Fevereiro/2025 com 11.675 visitas
+                        <strong>Pior Mês:</strong> Dezembro/25 com 100 atendimentos
                     </div>
                     <div class="insight-box">
                         <i class="fas fa-chart-line" style="color: #27ae60;"></i>
-                        <strong>Crescimento:</strong> +33,6% de Fev/25 para Abr/25
+                        <strong>Crescimento:</strong> +102% de Dez/25 para Jan/26
                     </div>
                     <div class="insight-box">
-                        <i class="fas fa-balance-scale" style="color: #667eea;"></i>
-                        <strong>Concentração:</strong> Top 3 unidades (CS Conceição, US Sousa, PS Celestino) respondem por 57% das visitas
+                        <i class="fas fa-exclamation-triangle" style="color: #f39c12;"></i>
+                        <strong>Observação:</strong> PS Felismina Ribeiro teve 2 meses com 0 atendimentos
                     </div>
                     <div class="insight-box">
-                        <i class="fas fa-calculator" style="color: #667eea;"></i>
-                        <strong>Média Geral:</strong> 13.579 visitas/mês | 617 visitas/dia
+                        <i class="fas fa-balance-scale" style="color: #27ae60;"></i>
+                        <strong>Concentração:</strong> Top 3 unidades respondem por 71% dos atendimentos
+                    </div>
+                    <div class="insight-box">
+                        <i class="fas fa-calculator" style="color: #27ae60;"></i>
+                        <strong>Média Geral:</strong> 173 atendimentos/mês | 7,9 atendimentos/dia
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Links para outros menus -->
-        <div class="menu-links">
-            <h3><i class="fas fa-link"></i> Acessar outros relatórios:</h3>
+        <!-- Links para outros relatórios -->
+        <div style="margin-top: 30px;">
+            <h3 style="color: white; margin-bottom: 15px;"><i class="fas fa-link"></i> Acessar outros relatórios:</h3>
             <div class="links-grid">
                 <a href="medicos.html" class="menu-link-item">
                     <i class="fas fa-user-md"></i>
-                    Atendimentos Médicos
-                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">13.055 atend.</small>
+                    <strong>Médicos</strong>
+                    <small>13.055 atend.</small>
                 </a>
                 <a href="enfermeiros.html" class="menu-link-item">
                     <i class="fas fa-user-nurse"></i>
-                    Atendimentos Enfermagem
-                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">10.202 atend.</small>
+                    <strong>Enfermagem</strong>
+                    <small>10.202 atend.</small>
                 </a>
                 <a href="dentistas.html" class="menu-link-item">
                     <i class="fas fa-tooth"></i>
-                    Atendimentos Odontológicos
-                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">5.118 atend.</small>
+                    <strong>Odontologia</strong>
+                    <small>5.118 atend.</small>
                 </a>
-                <a href="emulti.html" class="menu-link-item">
+                <a href="#" class="menu-link-item">
                     <i class="fas fa-users"></i>
-                    Equipe eMulti
-                    <small style="display: block; font-size: 0.8em; opacity: 0.8;">2.077 atend.</small>
+                    <strong>eMulti</strong>
+                    <small>2.077 atend. • Atual</small>
+                </a>
+                <a href="index.html" class="menu-link-item">
+                    <i class="fas fa-home"></i>
+                    <strong>Visitas</strong>
+                    <small>162.946 visitas</small>
                 </a>
             </div>
         </div>
@@ -592,20 +593,20 @@
     <script>
         // Dados para os gráficos
         const meses = ['Fev/25', 'Mar/25', 'Abr/25', 'Mai/25', 'Jun/25', 'Jul/25', 'Ago/25', 'Set/25', 'Out/25', 'Nov/25', 'Dez/25', 'Jan/26'];
-        const totaisMensais = [11675, 13441, 15600, 13685, 12784, 14501, 13903, 13733, 13111, 11929, 13205, 15379];
+        const totaisMensais = [165, 152, 142, 177, 157, 227, 226, 208, 152, 169, 100, 202];
         
         const unidades = [
             'CS Conceição',
-            'PS C. Nascimento',
-            'PS D. Arcoverde',
-            'PS F. Ribeiro',
-            'PS J. Campelo',
-            'PS P. Celestino',
-            'US L. Sousa'
+            'Ps C. Nascimento',
+            'Ps P. Celestino',
+            'Ps D. Arcoverde',
+            'Ps F. Ribeiro',
+            'Ps J. Campelo',
+            'Us L. Sousa'
         ];
         
-        const totaisUnidades = [27960, 21526, 14297, 17829, 16809, 26454, 38071];
-        const mediasMensais = [2330, 1794, 1191, 1486, 1401, 2205, 3173];
+        const totaisUnidades = [607, 245, 469, 301, 38, 256, 161];
+        const mediasMensais = [50.6, 20.4, 39.1, 25.1, 3.2, 21.3, 13.4];
 
         // Gráfico Mensal
         new Chart(document.getElementById('graficoMensal'), {
@@ -613,13 +614,13 @@
             data: {
                 labels: meses,
                 datasets: [{
-                    label: 'Total de Visitas',
+                    label: 'Atendimentos eMulti',
                     data: totaisMensais,
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
                     tension: 0.4,
                     fill: true,
-                    pointBackgroundColor: '#764ba2',
+                    pointBackgroundColor: '#2ecc71',
                     pointBorderColor: 'white',
                     pointRadius: 5,
                     pointHoverRadius: 8
@@ -641,7 +642,7 @@
                 datasets: [{
                     data: totaisUnidades,
                     backgroundColor: [
-                        '#667eea', '#764ba2', '#fc8181', '#48bb78', '#fbbf24', '#f43f5e', '#3b82f6'
+                        '#27ae60', '#2ecc71', '#f1c40f', '#e67e22', '#e74c3c', '#3498db', '#9b59b6'
                     ]
                 }]
             },
@@ -659,9 +660,9 @@
             data: {
                 labels: unidades,
                 datasets: [{
-                    label: 'Total de Visitas',
+                    label: 'Total de Atendimentos',
                     data: totaisUnidades,
-                    backgroundColor: '#667eea',
+                    backgroundColor: '#27ae60',
                     borderRadius: 8
                 }]
             },
@@ -679,7 +680,7 @@
             data: {
                 labels: unidades,
                 datasets: [{
-                    label: 'Média Mensal de Visitas',
+                    label: 'Média Mensal',
                     data: mediasMensais,
                     backgroundColor: '#f39c12',
                     borderRadius: 8
@@ -695,9 +696,9 @@
 
         // Gráfico Top 3
         const top3 = [
-            { unidade: 'US L. Sousa', valor: 38071 },
-            { unidade: 'CS Conceição', valor: 27960 },
-            { unidade: 'PS P. Celestino', valor: 26454 }
+            { unidade: 'CS Conceição', valor: 607 },
+            { unidade: 'Ps P. Celestino', valor: 469 },
+            { unidade: 'Ps D. Arcoverde', valor: 301 }
         ];
 
         new Chart(document.getElementById('graficoTop3'), {
@@ -706,7 +707,7 @@
                 labels: top3.map(item => item.unidade),
                 datasets: [{
                     data: top3.map(item => item.valor),
-                    backgroundColor: ['#f1c40f', '#667eea', '#764ba2'],
+                    backgroundColor: ['#f1c40f', '#27ae60', '#2ecc71'],
                     borderRadius: 8
                 }]
             },

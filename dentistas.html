@@ -228,6 +228,23 @@
             font-weight: 600;
         }
 
+        .media-badge {
+            background: #0077b6;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        .insight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #0077b6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
         /* Links */
         .links-grid {
             display: grid;
@@ -258,14 +275,6 @@
             margin-bottom: 10px;
             display: block;
         }
-
-        .insight-box {
-            background: #f8f9fa;
-            border-left: 4px solid #0077b6;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 0 10px 10px 0;
-        }
     </style>
 </head>
 <body>
@@ -285,8 +294,8 @@
                 <li><a href="medicos.html"><i class="fas fa-user-md"></i> Médicos</a></li>
                 <li><a href="enfermeiros.html"><i class="fas fa-user-nurse"></i> Enfermagem</a></li>
                 <li><a href="#" class="active"><i class="fas fa-tooth"></i> Dentistas</a></li>
-                <li><a href="#"><i class="fas fa-users"></i> eMulti</a></li>
-                <li><a href="index.html"><i class="fas fa-chart-bar"></i> Visitas</a></li>
+                <li><a href="emulti.html"><i class="fas fa-users"></i> eMulti</a></li>
+                <li><a href="visitas.html"><i class="fas fa-chart-bar"></i> Visitas</a></li>
             </ul>
         </div>
 
@@ -305,14 +314,15 @@
             </div>
             <div class="card">
                 <div class="card-icon"><i class="fas fa-calendar-check"></i></div>
-                <div class="card-title">Média Mensal</div>
-                <div class="card-value">426</div>
+                <div class="card-title">Média Diária</div>
+                <div class="card-value">19</div>
+                <div class="card-trend">Atendimentos/dia útil</div>
             </div>
             <div class="card">
                 <div class="card-icon"><i class="fas fa-trophy"></i></div>
                 <div class="card-title">Melhor Unidade</div>
                 <div class="card-value">Us L. Sousa</div>
-                <div class="card-trend">1.008 atendimentos</div>
+                <div class="card-trend">1.008 atend. | 84/mês</div>
             </div>
         </div>
 
@@ -334,8 +344,8 @@
                 <canvas id="graficoBarras"></canvas>
             </div>
             <div class="grafico-container">
-                <h3><i class="fas fa-chart-bar"></i> Comparativo de Desempenho</h3>
-                <canvas id="graficoRadar"></canvas>
+                <h3><i class="fas fa-chart-bar"></i> Média Mensal por Unidade</h3>
+                <canvas id="graficoMedias"></canvas>
             </div>
         </div>
 
@@ -343,6 +353,7 @@
         <div class="tabela-container">
             <h3 style="margin-bottom: 20px; color: #2c3e50;">
                 <i class="fas fa-table"></i> Detalhamento de Atendimentos Odontológicos por Unidade
+                <span class="media-badge">Médias: mensal | diária (22 dias/mês)</span>
             </h3>
             <table>
                 <thead>
@@ -361,7 +372,8 @@
                         <th>Dez/25</th>
                         <th>Jan/26</th>
                         <th>Total</th>
-                        <th>Média</th>
+                        <th>Média Mensal</th>
+                        <th>Média Diária</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -380,7 +392,8 @@
                         <td>49</td>
                         <td>101</td>
                         <td><strong>968</strong></td>
-                        <td>81</td>
+                        <td><strong>80,7</strong></td>
+                        <td><strong>3,7</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Ps Candido B do Nascimento</span></td>
@@ -397,7 +410,8 @@
                         <td>17</td>
                         <td>53</td>
                         <td><strong>441</strong></td>
-                        <td>37</td>
+                        <td><strong>36,8</strong></td>
+                        <td><strong>1,7</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Ps Dr Dirceu M Arcoverde Psf</span></td>
@@ -414,7 +428,8 @@
                         <td>69</td>
                         <td>75</td>
                         <td><strong>727</strong></td>
-                        <td>61</td>
+                        <td><strong>60,6</strong></td>
+                        <td><strong>2,8</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Ps Felismina Soares Ribeiro Psf</span></td>
@@ -431,7 +446,8 @@
                         <td>18</td>
                         <td>43</td>
                         <td><strong>487</strong></td>
-                        <td>41</td>
+                        <td><strong>40,6</strong></td>
+                        <td><strong>1,8</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Ps Jose Campelo da Fonseca</span></td>
@@ -448,7 +464,8 @@
                         <td>44</td>
                         <td>52</td>
                         <td><strong>560</strong></td>
-                        <td>47</td>
+                        <td><strong>46,7</strong></td>
+                        <td><strong>2,1</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Ps de Pedro J Celestino Psf</span></td>
@@ -465,7 +482,8 @@
                         <td>45</td>
                         <td>62</td>
                         <td><strong>927</strong></td>
-                        <td>77</td>
+                        <td><strong>77,3</strong></td>
+                        <td><strong>3,5</strong></td>
                     </tr>
                     <tr>
                         <td><span class="equipe-badge">Us Lucidio Ribeiro de Sousa Psf</span></td>
@@ -482,7 +500,8 @@
                         <td>100</td>
                         <td>147</td>
                         <td><strong>1.008</strong></td>
-                        <td>84</td>
+                        <td><strong>84,0</strong></td>
+                        <td><strong>3,8</strong></td>
                     </tr>
                     <tr class="total-row">
                         <td><strong>TOTAL GERAL</strong></td>
@@ -499,7 +518,8 @@
                         <td><strong>342</strong></td>
                         <td><strong>533</strong></td>
                         <td><strong>5.118</strong></td>
-                        <td><strong>426</strong></td>
+                        <td><strong>426,5</strong></td>
+                        <td><strong>19,4</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -524,7 +544,7 @@
                     </div>
                     <div class="insight-box">
                         <i class="fas fa-chart-line" style="color: #0077b6;"></i>
-                        <strong>Crescimento:</strong> +34.6% de Dez/25 para Jan/26
+                        <strong>Crescimento:</strong> +34,6% de Dez/25 para Jan/26
                     </div>
                     <div class="insight-box">
                         <i class="fas fa-exclamation-triangle" style="color: #f39c12;"></i>
@@ -533,6 +553,10 @@
                     <div class="insight-box">
                         <i class="fas fa-balance-scale" style="color: #0077b6;"></i>
                         <strong>Concentração:</strong> Top 3 unidades respondem por 57% dos atendimentos
+                    </div>
+                    <div class="insight-box">
+                        <i class="fas fa-calculator" style="color: #0077b6;"></i>
+                        <strong>Média Geral:</strong> 426 atendimentos/mês | 19 atendimentos/dia
                     </div>
                 </div>
             </div>
@@ -557,12 +581,12 @@
                     <strong>Odontologia</strong>
                     <small>5.118 atend. • Atual</small>
                 </a>
-                <a href="#" class="menu-link-item">
+                <a href="emulti.html" class="menu-link-item">
                     <i class="fas fa-users"></i>
                     <strong>eMulti</strong>
-                    <small>Em breve</small>
+                    <small>2.077 atend.</small>
                 </a>
-                <a href="index.html" class="menu-link-item">
+                <a href="visitas.html" class="menu-link-item">
                     <i class="fas fa-home"></i>
                     <strong>Visitas</strong>
                     <small>162.946 visitas</small>
@@ -577,16 +601,17 @@
         const totaisMensais = [396, 422, 401, 398, 438, 483, 385, 493, 414, 413, 342, 533];
         
         const unidades = [
-            'CS Conceicao',
-            'Ps C. Nascimento',
-            'Ps D. Arcoverde',
-            'Ps F. Ribeiro',
-            'Ps J. Campelo',
-            'Ps P. Celestino',
-            'Us L. Sousa'
+            'CS Conceição',
+            'PS C. Nascimento',
+            'PS D. Arcoverde',
+            'PS F. Ribeiro',
+            'PS J. Campelo',
+            'PS P. Celestino',
+            'US L. Sousa'
         ];
         
         const totaisUnidades = [968, 441, 727, 487, 560, 927, 1008];
+        const mediasMensais = [80.7, 36.8, 60.6, 40.6, 46.7, 77.3, 84.0];
 
         // Gráfico Mensal
         new Chart(document.getElementById('graficoMensal'), {
@@ -654,7 +679,27 @@
             }
         });
 
-        // Gráfico Radar
+        // Gráfico de Médias Mensais
+        new Chart(document.getElementById('graficoMedias'), {
+            type: 'bar',
+            data: {
+                labels: unidades,
+                datasets: [{
+                    label: 'Média Mensal de Atendimentos',
+                    data: mediasMensais,
+                    backgroundColor: '#f39c12',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Gráfico Radar (Comparativo)
         new Chart(document.getElementById('graficoRadar'), {
             type: 'radar',
             data: {
@@ -677,9 +722,9 @@
 
         // Gráfico Top 3
         const top3 = [
-            { unidade: 'Us L. Sousa', valor: 1008 },
-            { unidade: 'CS Conceicao', valor: 968 },
-            { unidade: 'Ps P. Celestino', valor: 927 }
+            { unidade: 'US L. Sousa', valor: 1008 },
+            { unidade: 'CS Conceição', valor: 968 },
+            { unidade: 'PS P. Celestino', valor: 927 }
         ];
 
         new Chart(document.getElementById('graficoTop3'), {
